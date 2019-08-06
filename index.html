@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+    <title>StopWatch</title>
+</head>
+
+<body>
+    <div id="timer">00:00.000</div>
+    <!--スタート-->
+    <form id="Start">
+        <p>
+            <input type="button" value="スタート" onclick="start('スタート');">
+        </p>
+    </form>
+    <!--ストップ-->
+    <form id="Stop">
+        <p>
+            <input type="button" value="ストップ" onclick="stop('ストップ');">
+        </p>
+    </form>
+    <!--リセット-->
+    <form id="Re">
+        <p>
+            <input type="button" value="リセット" onclick="re('リセット');">
+        </p>
+    </form>
+    <script>
+        var timer = document.getElementById('timer');
+        var elapsedTime = 0;
+        var timerId;
+        var timeToadd = 0;
+
+        function updateTimerText() {
+          // Math.floor 小数点以下を切り捨てる
+            var m = Math.floor(elapsedTime / 60000);
+            var s = Math.floor(elapsedTime % 60000 / 1000);
+            var ms = elapsedTime % 1000;
+            if (m < 10 && s < 10) {
+                timer.textContent = '0' + m + ':' + '0' + s + '.' + ms;
+            } else if (m < 10) {
+                timer.textContent = '0' + m + ':' + s + '.' + ms;
+            } else if (s < 10) {
+                timer.textContent = m + ':' + '0' + s + '.' + ms;
+            }
+        }
+        function countUp() {
+            timerId = setTimeout(function () {
+                elapsedTime = Date.now() - startTime + timeToadd;
+                updateTimerText();
+                countUp();
+            }, 10);
+        }
+        //スタート
+        var startTime;
+        var flag = true;
+        var start =
+            function start(str) {
+                if (flag) {
+                    flag = false;[
+                        (function () {
+                            startTime = Date.now();
+                            countUp();
+                        }())]
+                }
+            }
+
+        //ストップ
+        var stop =
+            function stop(str) {
+                flag = true;
+                clearTimeout(timerId);
+                timeToadd += Date.now() - startTime;
+            }
+
+        //リセット
+        var re =
+            function re(str) {
+                elapsedTime = 0;
+                timeToadd = 0;
+                timer.textContent = '00:00.000';
+            }
+    </script>
+</body>
+
+</html>
